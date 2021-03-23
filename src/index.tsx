@@ -43,40 +43,18 @@ const Square: React.FC<SquareProps> = ({ value, onClick }) => {
 /* ------------------------------
 Board
 ------------------------------ */
-const Board: React.FC = () => {
-  const [squares, setSquares] = useState<Array<SquareType>>(
-    Array(9).fill(null)
-  );
-  const [xIsNext, setXIsNext] = useState<boolean>(true);
+type BoardProps = {
+  squares: Array<SquareType>;
+  onClick: (i: number) => void;
+};
 
-  const handleClick = (i: number) => {
-    const _squares = squares.slice();
-
-    // 勝者が決定した or 既に埋まっているマスにクリックした場合 はクリックしてもなにも起こらないようにする
-    if (calculateWinner(_squares) || _squares[i]) {
-      return;
-    }
-    _squares[i] = xIsNext ? "X" : "O";
-    setSquares(_squares);
-    setXIsNext(!xIsNext);
-  };
-
+const Board: React.FC<BoardProps> = ({ squares, onClick }) => {
   const renderSquare = (i: number) => {
-    return <Square value={squares[i]} onClick={() => handleClick(i)} />;
+    return <Square value={squares[i]} onClick={() => onClick(i)} />;
   };
-
-  // 勝者の判定
-  const winner = calculateWinner(squares);
-  let status: string;
-  if (winner) {
-    status = "Winner: " + winner;
-  } else {
-    status = "Next player: " + (xIsNext ? "X" : "O");
-  }
 
   return (
     <div>
-      <div className="status">{status}</div>
       <div className="board-row">
         {renderSquare(0)}
         {renderSquare(1)}
@@ -99,14 +77,44 @@ const Board: React.FC = () => {
 /* ------------------------------
 Game
 ------------------------------ */
-const Game = () => {
+type HistoryData = {
+  squares: Array<SquareType>;
+};
+
+const Game: React.FC = () => {
+  const [history, setHistory] = useState<Array<HistoryData>>([
+    { squares: Array(9).fill(null) },
+  ]);
+  const [xIsNext, setXIsNext] = useState<boolean>(true);
+  const handleClick = (i: number) => {
+    const _history = history;
+    const current = _history[_history.length - 1];
+    const squares = current.squares.slice();
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
+    squares[i] = xIsNext ? "X" : "O";
+
+    setHistory(_history.concat([{ squares: squares }]));
+    setXIsNext(!xIsNext);
+  };
+
+  const _history = history;
+  const current = _history[_history.length - 1];
+  const winner = calculateWinner(current.squares);
+  let status;
+  if (winner) {
+    status = "Winner: " + winner;
+  } else {
+    status = "Next player: " + (xIsNext ? "X" : "O");
+  }
   return (
     <div className="game">
       <div className="game-board">
-        <Board />
+        <Board squares={current.squares} onClick={(i) => handleClick(i)} />
       </div>
       <div className="game-info">
-        <div>{/* status */}</div>
+        <div>{status}</div>
         <ol>{/* TODO */}</ol>
       </div>
     </div>
