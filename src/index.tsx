@@ -5,16 +5,20 @@ import "./index.css";
 /* ------------------------------
 Square
 ------------------------------ */
-const Square = () => {
-  return <button className="square">{/* TODO */}</button>;
+type SquareProps = {
+  value: number;
+};
+
+const Square: React.FC<SquareProps> = ({ value }) => {
+  return <button className="square">{value}</button>;
 };
 
 /* ------------------------------
 Board
 ------------------------------ */
-const Board = () => {
+const Board: React.FC = () => {
   const renderSquare = (i: number) => {
-    return <Square />;
+    return <Square value={i} />;
   };
   const status = "Next player: X";
   return (
