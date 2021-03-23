@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 
 /* ------------------------------
 Square
 ------------------------------ */
-type SquareProps = {
-  value: number;
-};
+type SquareType = "O" | "X" | null;
 
-const Square: React.FC<SquareProps> = ({ value }) => {
-  return <button className="square">{value}</button>;
+const Square: React.FC = () => {
+  const [value, setValue] = useState<SquareType>(null);
+  return (
+    <button className="square" onClick={() => setValue("X")}>
+      {value}
+    </button>
+  );
 };
 
 /* ------------------------------
@@ -18,7 +21,7 @@ Board
 ------------------------------ */
 const Board: React.FC = () => {
   const renderSquare = (i: number) => {
-    return <Square value={i} />;
+    return <Square />;
   };
   const status = "Next player: X";
   return (
