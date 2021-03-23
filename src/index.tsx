@@ -7,10 +7,14 @@ Square
 ------------------------------ */
 type SquareType = "O" | "X" | null;
 
-const Square: React.FC = () => {
-  const [value, setValue] = useState<SquareType>(null);
+type SquareProps = {
+  value: SquareType;
+  onClick: () => void;
+};
+
+const Square: React.FC<SquareProps> = ({ value, onClick }) => {
   return (
-    <button className="square" onClick={() => setValue("X")}>
+    <button className="square" onClick={() => onClick()}>
       {value}
     </button>
   );
@@ -20,9 +24,20 @@ const Square: React.FC = () => {
 Board
 ------------------------------ */
 const Board: React.FC = () => {
-  const renderSquare = (i: number) => {
-    return <Square />;
+  const [squares, setSquares] = useState<Array<SquareType>>(
+    Array(9).fill(null)
+  );
+
+  const handleClick = (i: number) => {
+    const _squares = squares.slice();
+    _squares[i] = "X";
+    setSquares(_squares);
   };
+
+  const renderSquare = (i: number) => {
+    return <Square value={squares[i]} onClick={() => handleClick(i)} />;
+  };
+
   const status = "Next player: X";
   return (
     <div>
