@@ -27,18 +27,19 @@ const Board: React.FC = () => {
   const [squares, setSquares] = useState<Array<SquareType>>(
     Array(9).fill(null)
   );
+  const [xIsNext, setXIsNext] = useState<boolean>(true);
 
   const handleClick = (i: number) => {
     const _squares = squares.slice();
-    _squares[i] = "X";
+    _squares[i] = xIsNext ? "X" : "O";
     setSquares(_squares);
+    setXIsNext(!xIsNext);
   };
 
   const renderSquare = (i: number) => {
     return <Square value={squares[i]} onClick={() => handleClick(i)} />;
   };
-
-  const status = "Next player: X";
+  const status: string = "Next player: " + (xIsNext ? "X" : "O");
   return (
     <div>
       <div className="status">{status}</div>
